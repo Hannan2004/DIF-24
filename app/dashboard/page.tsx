@@ -250,75 +250,84 @@ const Test = () => {
             </button>
             {cid && (
               <div className="mt-4 p-3 bg-green-100 text-green-700 rounded">
-                File uploaded successfully. CID: {cid}
+                File uploaded successfully.  
               </div>
             )}
           </div>
         </section>
-
         <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-4">All Uploaded Files</h2>
-          <div className="bg-white p-4 shadow-md rounded-lg">
-            {uploadedFiles.length > 0 ? (
-              <ul className="space-y-2">
-                {uploadedFiles.map((file) => (
-                  <li key={file._id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
-                    <Link 
-                      href={`https://gateway.pinata.cloud/ipfs/${file.cid}`}
-                      className="text-blue-600 hover:underline"
-                      target="_blank"
-                    >
-                      {file.name}
-                    </Link>
-                    <button
-                      onClick={() => removeFile(file._id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-full transition duration-300"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No files uploaded yet.</p>
-            )}
-          </div>
-        </section>
+  <h2 className="text-xl font-semibold mb-4">All Uploaded Files</h2>
+  <div className="bg-white p-4 shadow-md rounded-lg">
+    {uploadedFiles.length > 0 ? (
+      <ul className="space-y-2">
+        {uploadedFiles.map((file) => (
+          <li key={file._id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+            <span 
+              onClick={() => window.open(`${process.env.NEXT_PUBLIC_GATEWAY_URL}${file.cid}`, '_blank')}
+              className="text-blue-600 hover:underline cursor-pointer"
+            >
+              {file.name}
+            </span>
+            <button
+              onClick={() => removeFile(file._id)}
+              className="p-2 text-red-600 hover:bg-red-50 rounded-full transition duration-300"
+            >
+              <Trash2 size={20} />
+            </button>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>No files uploaded yet.</p>
+    )}
+  </div>
+</section>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-4">Group Files</h2>
-          {groups.map(group => (
-            <div key={group.id} className="bg-white p-4 shadow-md rounded-lg mb-4">
-              <h3 className="font-semibold mb-4">{group.name}</h3>
-              {group.files.length > 0 ? (
-                <div className="space-y-2">
-                  {group.files.map(file => (
-                    <div
-                      key={file._id}
-                      className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
-                    >
-                      <Link 
-                        href={`https://gateway.pinata.cloud/ipfs/${file.cid}`}
-                        className="text-blue-600 hover:underline"
-                        target="_blank"
-                      >
-                        {file.name}
-                      </Link>
-                      <button
-                        onClick={() => removeFileFromGroup(group.id, file._id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-full transition duration-300"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500">No files in this group</p>
-              )}
+<section className="mb-6">
+  <h2 className="text-xl font-semibold mb-4">Group Files</h2>
+  {groups.map(group => (
+    <div key={group.id} className="bg-white p-4 shadow-md rounded-lg mb-4">
+      <h3 className="font-semibold mb-4">{group.name}</h3>
+      {group.files.length > 0 ? (
+        <div className="space-y-2">
+          {group.files.map(file => (
+            <div
+              key={file._id}
+              className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
+            >
+              <span 
+                onClick={() => window.open(`${process.env.NEXT_PUBLIC_GATEWAY_URL}${file.cid}`, '_blank')}
+                className="text-blue-600 hover:underline cursor-pointer"
+              >
+                {file.name}
+              </span>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_GATEWAY_URL}/${file.cid}`);
+                       alert('Link copied to clipboard!');
+                  }}
+                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition duration-300"
+                >
+                  Share
+                </button>
+                <button
+                  onClick={() => removeFileFromGroup(group.id, file._id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition duration-300"
+                >
+                  <Trash2 size={20} />
+                </button>
+              </div>
             </div>
-          ))}
-        </section>
+          )) }
+        </div>
+      ) : (
+        <p className="text-gray-500">No files in this group</p>
+      )}
+    </div>
+  ))}
+</section>
+
       </main>
     </div>
   );
