@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -32,6 +32,9 @@ const Navbar = () => {
           <Link href="/login" className="px-4 py-2 bg-white text-blue-600 rounded-md hover:bg-gray-200 transition duration-300">
             Login
           </Link>
+          <Link href="/register" className="px-4 py-2 bg-white text-blue-600 rounded-md hover:bg-gray-200 transition duration-300">
+            Register
+          </Link>
         </div>
         <div className="md:hidden">
           <button onClick={toggleMenu} className="text-white focus:outline-none">
@@ -54,8 +57,11 @@ const Navbar = () => {
             <Link href="/contact" className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-200 hover:bg-blue-700 transition duration-300">
               Contact
             </Link>
-            <Link href="/auth/login" className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-white hover:bg-gray-200 transition duration-300">
+            <Link href="/login" className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-white hover:bg-gray-200 transition duration-300">
               Login
+            </Link>
+            <Link href="/register" className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-white hover:bg-gray-200 transition duration-300">
+              Register
             </Link>
           </div>
         </div>

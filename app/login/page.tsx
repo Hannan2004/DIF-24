@@ -1,64 +1,60 @@
-'use client';
+"use client";
+import { FormEvent, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { signup } from '@/app/actions/auth';
+export default function Login() {
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-export default function SigninForm() {
-  const [state, action] = useFormState(signup, undefined);
-
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 p-4">
-      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
-        <h1 className="text-3xl font-bold text-center mb-6">Sign Up</h1>
-        <form action={action} className="space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              id="email"
-              name="email"
-              placeholder="Email"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
-            {state?.errors?.email && <p className="text-red-500 text-sm mt-1">{state.errors.email}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Password"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
-            {state?.errors?.password && (
-              <div className="text-red-500 text-sm mt-1">
-                <p>Password must:</p>
-                <ul className="list-disc list-inside">
-                  {state.errors.password.map((error) => (
-                    <li key={error}>- {error}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-          <SubmitButton />
-        </form>
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const res = await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    });
+    if (res?.error) {
+      setError(res.error as string);
+    }
+    if (res?.ok) {
+      return router.push("/dashboard");
+    }
+};
+return (
+  <section className="w-full h-screen flex items-center justify-center">
+    <form
+      className="p-6 w-full max-w-[400px] flex flex-col justify-between items-center gap-2 
+      border border-solid border-black bg-white rounded"
+      onSubmit={handleSubmit}>
+      {error && <div className="text-black">{error}</div>}
+      <h1 className="mb-5 w-full text-2xl font-bold">Sign In</h1>
+      <label className="w-full text-sm">Email</label>
+      <input
+        type="email"
+        placeholder="Email"
+        className="w-full h-8 border border-solid border-black rounded p-2"
+        name="email" />
+      <label className="w-full text-sm">Password</label>
+      <div className="flex w-full">
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full h-8 border border-solid border-black rounded p-2"
+          name="password" />
       </div>
-    </div>
-  );
-}
+      <button className="w-full border border-solid border-black rounded">
+        Sign In
+      </button>
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      disabled={pending}
-      type="submit"
-      className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-    >
-      Sign Up
-    </button>
-  );
-}
+      <Link
+        href="/register"
+        className="text-sm text-[#888] transition duration-150 ease hover:text-black">
+        Don't have an account?
+      </Link>
+    </form>
+  </section>
+);
+};
